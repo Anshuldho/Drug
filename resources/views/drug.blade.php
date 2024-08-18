@@ -29,7 +29,7 @@
             <input type="text" name="name" placeholder="Name" class="block w-full p-4 mb-6 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300">
             <input type="text" name="batchNumber" placeholder="Batch Number" class="block w-full p-4 mb-6 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300">
             <input type="text" name="manufacturer" placeholder="Manufacturer" class="block w-full p-4 mb-6 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300">
-            <input type="text" name="expiryDate" placeholder="Expiry Date" class="block w-full p-4 mb-6 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300">
+            <input type="date" name="expiryDate" placeholder="Expiry Date" class="block w-full p-4 mb-6 border border-gray-400 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-300">
             <button type="submit" class="block w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-4 rounded-lg hover:opacity-90 transition-opacity duration-300">
                 Add Drug
             </button>

@@ -10,7 +10,29 @@ class DrugController extends Controller
     protected $web3;
     protected $contract;
 
+    public function store(Request $request)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'drugId' => 'required|string',
+            'name' => 'required|string',
+            'batchNumber' => 'required|string',
+            'manufacturer' => 'required|string',
+            'expiryDate' => 'required|date',
+        ]);
 
+        // Store the drug information into the database
+        Drug::create([
+            'drugId' => $validated['drugId'],
+            'name' => $validated['name'],
+            'batchNumber' => $validated['batchNumber'],
+            'manufacturer' => $validated['manufacturer'],
+            'expiryDate' => $validated['expiryDate'],
+        ]);
+
+        // Redirect or return a success response
+        return redirect()->back()->with('success', 'Drug added successfully!');
+    }
     public function drug()
     {
 
@@ -34,32 +56,6 @@ class DrugController extends Controller
     {
         $drugs = Drug::all();
         return view('listDrugs', ['drugs' => $drugs]);
-    }
-    public function store(Request $request)
-    {
-        // Validate the request
-        $validated = $request->validate([
-            'drugId' => 'required|string',
-            'name' => 'required|string',
-            'batchNumber' => 'required|string',
-            'manufacturer' => 'required|string',
-            'expiryDate' => 'required|date',
-        ], [
-            'drugId.required' => 'Please enter the Drug ID.',
-            'name.required' => 'Please enter the drug name.',
-            'batchNumber.required' => 'Please enter the batch number.',
-            'manufacturer.required' => 'Please enter the manufacturer.',
-            'expiryDate.required' => 'Please enter the expiry date.',
-        ]);
-
-        // Create a new Drug instance and save to database
-        Drug::create($validated);
-
-        // Log a message for debugging
-        \Log::info('New drug added:', $validated);
-
-        // Redirect to the drug list page
-        return redirect()->route('listDrugs');
     }
 
 

@@ -14,15 +14,16 @@ class CreateDrugsTable extends Migration
     public function up()
     {
         Schema::create('drugs', function (Blueprint $table) {
-            $table->id(); // Adds an auto-incrementing ID column
-            $table->string('drugId')->unique(); // Unique drug ID
-            $table->string('name'); // Name of the drug
-            $table->string('batchNumber'); // Batch number
-            $table->string('manufacturer'); // Manufacturer
-            $table->date('expiryDate'); // Expiry date
-            $table->timestamps(); // Adds created_at and updated_at columns
+            $table->id();
+            $table->string('drugId');
+            $table->string('name');
+            $table->string('batchNumber');
+            $table->string('manufacturer');
+            $table->date('expiryDate');
+            $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
