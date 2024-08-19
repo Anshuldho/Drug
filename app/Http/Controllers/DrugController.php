@@ -62,39 +62,58 @@ class DrugController extends Controller
     // Verify a drug
     public function verifyDrug(Request $request)
     {
-        $drugId = $request->input('drugId');
+        // Validate the input
+        $request->validate([
+            'drugId' => 'required|string',
+        ]);
 
-        $this->contract->at(env('CONTRACT_ADDRESS'))->call('verifyDrug', $drugId, function ($err, $result) {
-            if ($err !== null) {
-                return response()->json(['error' => 'Drug not found'], 404);
-            }
-            return response()->json(['drug' => $result]);
-        });
-    }
+        // Find the drug by its ID
+        $drug = Drug::where('drugId', $request->input('drugId'))->first();
 
-public function updateDrugDistributor(Request $request)
-{
-    $drugId = $request->input('drugId');
-    $newDistributor = $request->input('newDistributor');
-
-    $this->contract->at(env('CONTRACT_ADDRESS'))->send('updateDrugDistributor', $drugId, $newDistributor, function ($err, $transaction) {
-        if ($err !== null) {
-            return response()->json(['error' => 'Failed to update drug distributor'], 500);
+        // Redirect to result based on whether the drug is found
+        if ($drug) {
+            return redirect()->route('verificationResult', ['result' => 'yes']);
+        } else {
+            return redirect()->route('verificationResult', ['result' => 'no']);
         }
-        return response()->json(['message' => 'Drug distributor updated successfully', 'transaction' => $transaction]);
-    });
-}
-    public function deleteDrug(Request $request)
-    {
-        $drugId = $request->input('drugId');
+    }
 
-        $this->contract->at(env('CONTRACT_ADDRESS'))->send('deleteDrug', $drugId, function ($err, $transaction) {
-            if ($err !== null) {
-                return response()->json(['error' => 'Failed to delete drug'], 500);
-            }
-            return response()->json(['message' => 'Drug deleted successfully', 'transaction' => $transaction]);
-        });
+    public function updateDrugDistributor(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'drugId' => 'required|exists:drugs,id',
+            'newDistributor' => 'required|string|max:255',
+        ]);
+
+        // Fetch the drug based on its ID
+        $drug = Drug::find($request->drugId);
+
+        // If drug is not found, return an error (though validation should catch this)
+        if (!$drug) {
+            return redirect()->back()->with('error', 'Drug not found');
+        }
+
+        // Update the distributor
+        $drug->distributor = $request->newDistributor;
+
+        // Save the changes
+        $drug->save();
+
+        // Return a success message or redirect
+        return redirect()->back()->with('success', 'Distributor updated successfully');
     }
 
 
+    public function deleteDrug($id)
+    {
+        // Find the drug by ID
+        $drug = Drug::findOrFail($id);
+
+        // Delete the drug
+        $drug->delete();
+
+        // Redirect back to the list with a success message
+        return redirect()->route('listDrugs')->with('success', 'Drug deleted successfully.');
+    }
 }
